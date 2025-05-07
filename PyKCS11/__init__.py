@@ -1090,6 +1090,53 @@ class EXTRACT_KEY_FROM_KEY_Mechanism:
     def to_native(self):
         """convert mechanism to native format"""
         return self._mech
+    
+
+class PKCS5_PBKD2_Mechanism(object):
+    """ CKM_PKCS5_PBKD2 key generation mechanism"""
+
+    def __init__(self, iterations, password, salt,
+                 prf=PyKCS11.LowLevel.CKP_PKCS5_PBKD2_HMAC_SHA256, prfData=None,
+                 saltSource=PyKCS11.LowLevel.CKZ_SALT_SPECIFIED):
+        """
+        :param salt: data used as the input for the salt source
+        :param iterations: number of iterations to perform when generating each block of random data
+        :param password: password from which the key is generated
+        :param prf: pseudo-random function to used to generate the key
+        :param prfData: data used as the input for PRF in addition to the salt value
+        :param saltSource: source of the salt value
+
+        """
+        self._param = PyKCS11.LowLevel.CK_PKCS5_PBKD2_PARAMS2()
+        self._saltSource = saltSource
+        self._param.saltSource = self._saltSource
+
+        self._salt = ckbytelist(salt)
+        self._param.pSaltSourceData = self._salt
+        self._param.ulSaltSourceDataLen = len(self._salt)
+
+        self._iterations = iterations
+        self._param.iterations = self._iterations
+
+        self._prf = prf
+        self._param.prf = self._prf
+        self._prfData = None
+        if prfData:
+            self._prfData = ckbytelist(prfData)
+            self._param.pPrfData = self._prfData
+            self._param.ulPrfDataLen = len(self._prfData)
+
+        self._password = ckbytelist(password)
+        self._param.pPassword = self._password
+        self._param.ulPasswordLen = len(self._password)
+
+        self._mech = PyKCS11.LowLevel.CK_MECHANISM()
+        self._mech.mechanism = CKM_PKCS5_PBKD2
+        self._mech.pParameter = self._param
+        self._mech.ulParameterLen = PyKCS11.LowLevel.CK_PKCS5_PBKD2_PARAMS2_LENGTH
+
+    def to_native(self):
+        return self._mech
 
 
 class DigestSession:

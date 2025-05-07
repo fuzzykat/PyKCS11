@@ -774,6 +774,42 @@ struct ck_key_derivation_string_data {
 
 typedef unsigned long ck_extract_params;
 
+/* CK_PKCS5_PBKD2_PSEUDO_RANDOM_FUNCTION_TYPE is used to
+ * indicate the Pseudo-Random Function (PRF) used to generate
+ * key bits using PKCS #5 PBKDF2.
+ */
+typedef unsigned long CK_PKCS5_PBKD2_PSEUDO_RANDOM_FUNCTION_TYPE;
+
+typedef CK_PKCS5_PBKD2_PSEUDO_RANDOM_FUNCTION_TYPE * \
+                        CK_PKCS5_PBKD2_PSEUDO_RANDOM_FUNCTION_TYPE_PTR;
+
+/* CK_PKCS5_PBKDF2_SALT_SOURCE_TYPE is used to indicate the
+ * source of the salt value when deriving a key using PKCS #5
+ * PBKDF2.
+ */
+typedef unsigned long CK_PKCS5_PBKDF2_SALT_SOURCE_TYPE;
+
+typedef CK_PKCS5_PBKDF2_SALT_SOURCE_TYPE * \
+                        CK_PKCS5_PBKDF2_SALT_SOURCE_TYPE_PTR;
+
+/* CK_PKCS5_PBKD2_PARAMS2 is a corrected version of the CK_PKCS5_PBKD2_PARAMS
+ * structure that provides the parameters to the CKM_PKCS5_PBKD2 mechanism
+ * noting that the ulPasswordLen field is a CK_ULONG and not a CK_ULONG_PTR.
+ */
+typedef struct CK_PKCS5_PBKD2_PARAMS2 {
+	CK_PKCS5_PBKDF2_SALT_SOURCE_TYPE saltSource;
+	void* pSaltSourceData;
+	unsigned long ulSaltSourceDataLen;
+	unsigned long iterations;
+	CK_PKCS5_PBKD2_PSEUDO_RANDOM_FUNCTION_TYPE prf;
+	void* pPrfData;
+	unsigned long ulPrfDataLen;
+	unsigned char* pPassword;
+	unsigned long ulPasswordLen;
+} CK_PKCS5_PBKD2_PARAMS2;
+
+typedef CK_PKCS5_PBKD2_PARAMS2 * CK_PKCS5_PBKD2_PARAMS2_PTR;
+
 #define CKF_HW			(1 << 0)
 #define CKF_ENCRYPT		(1 << 8)
 #define CKF_DECRYPT		(1 << 9)
