@@ -276,6 +276,10 @@ typedef struct CK_DATE{
             if( SWIG_IsOK( res2 ) )
                 break;
 
+            res2 = SWIG_ConvertPtr($input, &arg2, $descriptor(CK_PKCS5_PBKD2_PARAMS2*), 0);
+            if( SWIG_IsOK( res2 ) )
+                break;
+
             res2 = SWIG_ConvertPtr($input, &arg2, $descriptor(CK_OBJECT_HANDLE*), 0);
             if( SWIG_IsOK( res2 ) )
                 break;
