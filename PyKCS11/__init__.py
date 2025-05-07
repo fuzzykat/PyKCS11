@@ -1439,6 +1439,33 @@ class Session:
         if rv != CKR_OK:
             raise PyKCS11Error(rv)
         return decrypted
+    
+    def decryptInit(self, mech, key):
+        m = mech.to_native()
+        rv = self.lib.C_DecryptInit(self.session, m, key)
+        if rv != CKR_OK:
+            raise PyKCS11Error(rv)
+
+    def decryptUpdate(self, data):
+        decrypted = ckbytelist(data)
+        data1 = ckbytelist(data)
+        # first call to get the decrypted size
+        rv = self.lib.C_DecryptUpdate(self.session, data1, decrypted)
+        if rv != CKR_OK:
+            raise PyKCS11Error(rv)
+        # second call to get the actual decrypted data
+        rv = self.lib.C_DecryptUpdate(self.session, data1, decrypted)
+        if rv != CKR_OK:
+            raise PyKCS11Error(rv)
+        return decrypted
+
+    def decryptFinal(self, decrypted):
+        rv = self.lib.C_DecryptFinal(self.session, decrypted)
+        if rv != CKR_OK:
+            raise PyKCS11Error(rv)
+        rv = self.lib.C_DecryptFinal(self.session, decrypted)
+        if rv != CKR_OK:
+            raise PyKCS11Error(rv)
 
     def wrapKey(self, wrappingKey, key, mecha=MechanismRSAPKCS1):
         """
